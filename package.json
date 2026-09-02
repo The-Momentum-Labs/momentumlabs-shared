@@ -1,0 +1,20 @@
+{
+  "name": "@momentumlabs/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pages and styles shared across every Momentum Labs site. Edit here, never in a consuming repo.",
+  "exports": {
+    "./events/EventsPage.astro": "./events/EventsPage.astro",
+    "./events/events.css": "./events/events.css",
+    "./events/events.ts": "./events/events.ts",
+    "./events/jsonLd.ts": "./events/jsonLd.ts",
+    "./events/assets/*": "./events/assets/*"
+  },
+  "files": [
+    "events"
+  ],
+  "peerDependencies": {
+    "astro": "^5.10.0"
+  }
+}

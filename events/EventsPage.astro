@@ -1,0 +1,138 @@
+---
+/**
+ * The events page body, shared by every Momentum Labs site.
+ *
+ * This is the whole page between the host site's header and footer. Nothing
+ * here reads the host stylesheet: `events.css` brings its own fonts, palette and
+ * frame, so the page looks the same wherever it is mounted.
+ *
+ * Do not copy this file into a site. Change it here and both sites move.
+ */
+import { eventsFor, type ProductKey } from './events.ts';
+import './events.css';
+
+interface Props {
+  /** Show only this product's events. Omit to show every Momentum Labs event. */
+  product?: ProductKey;
+}
+
+const { product } = Astro.props;
+const events = eventsFor(product);
+
+/* Vite resolves the package's own assets, so the images travel with the
+   package instead of having to be copied into each site's public folder. */
+const ASSETS = import.meta.glob<string>('./assets/*.webp', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+const asset = (file: string) => ASSETS[`./assets/${file}`];
+
+const HERO_PHOTOS = Array.from({ length: 9 }, (_, i) => asset(`events-collage-${i + 1}.webp`));
+
+/* When every night is the same show, the show's name is the page title. */
+const sameShow = events.length > 0 && events.every((e) => e.title === events[0].title)
+  ? events[0].title
+  : null;
+
+/* Year markers down the timeline, in the order the events appear. */
+const years = [...new Set(events.map((e) => e.whenIso.slice(0, 4)))];
+const firstOfYear = new Map(years.map((y) => [y, events.findIndex((e) => e.whenIso.startsWith(y))]));
+
+const mapsHref = (venue: string, address: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`;
+---
+<div class="ev-page">
+  <span class="ev-punch" aria-hidden="true"></span>
+  <span class="ev-gutter" aria-hidden="true"></span>
+
+  <section class="ev-section">
+    <div class="ev-intro">
+      <div class="ev-intro-copy" id="talk">
+        <h1 class="ev-title">{sameShow ?? 'Upcoming events'}</h1>
+        <p class="ev-lead">Most students spend months building a college application without ever seeing how an admissions officer <strong>actually reads</strong> one, or what <strong>story</strong> their application is really telling. In this <strong>90-minute</strong> live session, <strong>Feiyang Liu</strong>, a former <strong>UC Berkeley</strong> admissions officer, breaks down <strong>real</strong> admissions examples, comparing actual awards, activities, essays, and student stories to show what <strong>stands out</strong>, what <strong>gets lost</strong>, and how a file changes when it is read <strong>in context</strong>, at speed, and next to everyone else in the pile.</p>
+        <p class="ev-lead">You'll see how to uncover the experiences and patterns that make <strong>your story</strong> yours, how the same student can authentically present different parts of themselves to <strong>different schools</strong>, and why something that sounds impressive in isolation may fall flat once an admissions officer sees the <strong>full file</strong>. Nico Berlingeri then shows how to use technology to <strong>move faster</strong> and make <strong>better decisions</strong> throughout the admissions process, from finding schools and programs you would never discover through <strong>rankings</strong> alone and comparing true <strong>four-year</strong> cost after aid, to <strong>pressure-testing</strong> your writing, researching opportunities, tracking requirements, and making sure scholarships, forms, and <strong>deadlines</strong> do not slip through the cracks.</p>
+        <p class="ev-lead">You leave knowing how admissions officers actually <strong>evaluate you</strong>, how to find and <strong>communicate</strong> your story, how to choose schools around <strong>fit</strong> instead of prestige, and how to use technology to do the entire process better without letting it do the <strong>thinking</strong> for you.</p>
+      </div>
+      <div class="ev-hero-photo" data-ev-slideshow aria-hidden="true">
+        {HERO_PHOTOS.map((src, i) => (
+          <div class:list={['ev-slide', i === 0 && 'is-on']}>
+            <img src={src} alt="" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {events.length === 0 ? (
+      <p class="ev-empty">No sessions on the calendar right now.</p>
+    ) : (
+      <ol class="ev-list">
+        {events.map((event, i) => (
+          <>
+            {firstOfYear.get(event.whenIso.slice(0, 4)) === i && (
+              <li class="ev-year" aria-hidden="true"><span>{event.whenIso.slice(0, 4)}</span></li>
+            )}
+            <li class="ev-entry">
+              <article class="ev-card">
+                {event.image && (
+                  <figure class="ev-figure">
+                    <img src={asset(event.image)} alt={`${event.title} flier, ${event.city}`} loading="lazy" decoding="async" />
+                    <span class="ev-place">
+                      <span class="ev-place-city">{event.venueShort}</span>
+                      <span class="ev-place-state">{event.placeLabel}</span>
+                    </span>
+                  </figure>
+                )}
+                <div class="ev-body">
+                  <h3>{event.title}</h3>
+                  <p class="ev-sub"><strong>{event.date}</strong> · {event.format} · {event.length} · {event.audience}</p>
+                  <p class="ev-text" set:html={event.blurbHtml} />
+                  <a
+                    class="ev-where"
+                    href={mapsHref(event.venue, event.address)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <p class="ev-where-line">
+                      <svg class="ev-pin" width="13" height="16" viewBox="0 0 13 16" aria-hidden="true"><path fill="currentColor" d="M6.5 0a6.5 6.5 0 0 0-6.5 6.5C0 11.2 6.5 16 6.5 16s6.5-4.8 6.5-9.5A6.5 6.5 0 0 0 6.5 0zm0 8.8A2.3 2.3 0 1 1 6.5 4.2a2.3 2.3 0 0 1 0 4.6z"/></svg>
+                      <span class="ev-where-city">{event.venue}</span>
+                    </p>
+                    <p class="ev-where-addr">{event.address}</p>
+                  </a>
+                  <div class="ev-links">
+                    <a class="ev-signup" href={event.signupHref}>Reserve a seat</a>
+                    <a class="ev-signup" href="#talk">What's in the talk</a>
+                  </div>
+                </div>
+              </article>
+            </li>
+          </>
+        ))}
+      </ol>
+    )}
+  </section>
+</div>
+
+<script>
+  const root = document.querySelector('[data-ev-slideshow]');
+  const slides = root ? [...root.querySelectorAll('.ev-slide')] : [];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (root && slides.length > 1 && !reduce) {
+    let i = 0;
+    window.setInterval(() => {
+      const prev = slides[i];
+      i = (i + 1) % slides.length;
+      prev.classList.remove('is-on');
+      prev.classList.add('was-on');
+      slides[i].classList.add('is-on');
+      window.setTimeout(() => prev.classList.remove('was-on'), 800);
+    }, 3200);
+  }
+
+  document.querySelectorAll('a[href="#talk"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+  });
+</script>

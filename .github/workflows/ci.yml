@@ -1,0 +1,26 @@
+name: CI
+on:
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  guard:
+    name: guard
+    if: github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: main only from dev
+        run: |
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "::error::PRs into main must come from 'dev' (got '${{ github.head_ref }}')."
+            exit 1
+          fi
+          echo "OK — PR into main is from dev."
+
+  CI:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: CI placeholder
+        run: echo "CI placeholder — replace with this repo's real lint / test / build."

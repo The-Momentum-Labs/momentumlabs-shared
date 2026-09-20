@@ -51,13 +51,7 @@ const mapsHref = (venue: string, address: string) =>
 
   <section class="ev-section">
     <div class="ev-intro">
-      <div class="ev-intro-copy" id="talk">
-        <h1 class="ev-title">{sameShow ?? 'Upcoming events'}</h1>
-        <p class="ev-lead">Most students spend months building a college application without ever seeing how an admissions officer <strong>actually reads</strong> one, or what <strong>story</strong> their application is really telling. In this <strong>90-minute</strong> live session, <strong>Feiyang Liu</strong>, a former <strong>UC Berkeley</strong> admissions officer, breaks down <strong>real</strong> admissions examples, comparing actual awards, activities, essays, and student stories to show what <strong>stands out</strong>, what <strong>gets lost</strong>, and how a file changes when it is read <strong>in context</strong>, at speed, and next to everyone else in the pile.</p>
-        <p class="ev-lead">You'll see how to uncover the experiences and patterns that make <strong>your story</strong> yours, how the same student can authentically present different parts of themselves to <strong>different schools</strong>, and why something that sounds impressive in isolation may fall flat once an admissions officer sees the <strong>full file</strong>. Nico Berlingeri then shows how to use technology to <strong>move faster</strong> and make <strong>better decisions</strong> throughout the admissions process, from finding schools and programs you would never discover through <strong>rankings</strong> alone and comparing true <strong>four-year</strong> cost after aid, to <strong>pressure-testing</strong> your writing, researching opportunities, tracking requirements, and making sure scholarships, forms, and <strong>deadlines</strong> do not slip through the cracks.</p>
-        <p class="ev-lead">You leave knowing how admissions officers actually <strong>evaluate you</strong>, how to find and <strong>communicate</strong> your story, how to choose schools around <strong>fit</strong> instead of prestige, and how to use technology to do the entire process better without letting it do the <strong>thinking</strong> for you.</p>
-      </div>
-      <div class="ev-hero-photo" data-ev-slideshow aria-hidden="true">
+        <div class="ev-hero-photo" data-ev-slideshow aria-hidden="true">
         {HERO_PHOTOS.map((src, i) => (
           <div class:list={['ev-slide', i === 0 && 'is-on']}>
             <img src={src} alt="" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />

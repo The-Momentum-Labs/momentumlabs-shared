@@ -99,8 +99,10 @@
 .ev-hero-photo {
   position: relative;
   width: 100%;
-  /* No copy beside it any more, so the strip sets its own height. */
-  height: clamp(20rem, 32vw, 32rem);
+  /* No copy beside it any more, so the strip sets its own shape. 3:2 sits in
+     the middle of the photos (1.33 to 1.71 wide), so cover crops little. */
+  aspect-ratio: 3 / 2;
+  height: auto;
   min-height: 0;
   overflow: hidden;
   border-radius: 10px;

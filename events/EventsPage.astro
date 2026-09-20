@@ -8,16 +8,18 @@
  *
  * Do not copy this file into a site. Change it here and both sites move.
  */
-import { eventsFor, type ProductKey } from './events.ts';
+import { eventsFor, type LiveEvent, type ProductKey } from './events.ts';
 import './events.css';
 
 interface Props {
   /** Show only this product's events. Omit to show every Momentum Labs event. */
   product?: ProductKey;
+  /** Events to show instead of the typed list, e.g. read from Luma by the host site. */
+  events?: LiveEvent[];
 }
 
 const { product } = Astro.props;
-const events = eventsFor(product);
+const events = Astro.props.events ?? eventsFor(product);
 
 /* Vite resolves the package's own assets, so the images travel with the
    package instead of having to be copied into each site's public folder. */
@@ -26,7 +28,8 @@ const ASSETS = import.meta.glob<string>('./assets/*.webp', {
   query: '?url',
   import: 'default',
 });
-const asset = (file: string) => ASSETS[`./assets/${file}`];
+/* A full URL (a Luma cover) is used as is; anything else is a file in ./assets. */
+const asset = (file: string) => /^https?:\/\//.test(file) ? file : ASSETS[`./assets/${file}`];
 
 const HERO_PHOTOS = Array.from({ length: 9 }, (_, i) => asset(`events-collage-${i + 1}.webp`));
 
@@ -77,17 +80,19 @@ const mapsHref = (venue: string, address: string) =>
                 {event.image && (
                   <figure class="ev-figure">
                     <img src={asset(event.image)} alt={`${event.title} flier, ${event.city}`} loading="lazy" decoding="async" />
-                    <span class="ev-place">
-                      <span class="ev-place-city">{event.venueShort}</span>
-                      <span class="ev-place-state">{event.placeLabel}</span>
-                    </span>
+                    {event.venueShort && (
+                      <span class="ev-place">
+                        <span class="ev-place-city">{event.venueShort}</span>
+                        <span class="ev-place-state">{event.placeLabel}</span>
+                      </span>
+                    )}
                   </figure>
                 )}
                 <div class="ev-body">
                   <h3>{event.title}</h3>
-                  <p class="ev-sub"><strong>{event.date}</strong> · {event.format} · {event.length} · {event.audience}</p>
+                  <p class="ev-sub"><strong>{event.date}</strong>{[event.format, event.length, event.audience].filter(Boolean).map((s) => ` · ${s}`).join('')}</p>
                   <p class="ev-text" set:html={event.blurbHtml} />
-                  <a
+                  {event.venue && <a
                     class="ev-where"
                     href={mapsHref(event.venue, event.address)}
                     target="_blank"
@@ -98,9 +103,9 @@ const mapsHref = (venue: string, address: string) =>
                       <span class="ev-where-city">{event.venue}</span>
                     </p>
                     <p class="ev-where-addr">{event.address}</p>
-                  </a>
+                  </a>}
                   <div class="ev-links">
-                    <a class="ev-signup" href={event.signupHref}>Reserve a seat</a>
+                    {event.signupHref && <a class="ev-signup" href={event.signupHref}>Reserve a seat</a>}
                     <a class="ev-signup" href="#talk">What's in the talk</a>
                   </div>
                 </div>

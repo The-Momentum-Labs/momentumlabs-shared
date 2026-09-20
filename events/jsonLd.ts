@@ -6,7 +6,7 @@
  * hands the result to its layout, so the markup stays shared while the canonical
  * URL and the organizer stay correct per site.
  */
-import { eventsFor, type ProductKey } from './events.ts';
+import { eventsFor, type LiveEvent, type ProductKey } from './events.ts';
 
 export type EventsJsonLdOptions = {
   /** Narrow to one product's events. Omit for every event. */
@@ -17,11 +17,13 @@ export type EventsJsonLdOptions = {
   orgName: string;
   /** Path the page is served at, e.g. '/events/'. */
   path: string;
+  /** Events to describe instead of the typed list, e.g. read from Luma. */
+  events?: LiveEvent[];
 };
 
-export function eventsJsonLd({ product, siteUrl, orgName, path }: EventsJsonLdOptions): object[] {
+export function eventsJsonLd({ product, siteUrl, orgName, path, events }: EventsJsonLdOptions): object[] {
   const pageUrl = new URL(path, siteUrl).href;
-  return eventsFor(product).map((e) => ({
+  return (events ?? eventsFor(product)).map((e) => ({
     '@context': 'https://schema.org',
     '@type': 'Event',
     name: e.title,

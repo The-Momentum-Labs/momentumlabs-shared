@@ -46,9 +46,10 @@ const PLACE_LABEL = 'Sun Valley, CA';
 const ADDRESS = '11933 Allegheny St, Sun Valley, CA 91352, USA';
 const MAIL = (night: string) =>
   `mailto:contact@momentumlabs.ai?subject=The%20Admissions%20Machine%2C%20${encodeURIComponent(night)}&body=Name%3A%0ARole%20(student%2C%20parent%2C%20counselor)%3A%0ASchool%20or%20practice%3A`;
-const CARD_BLURB =
+/** The Admissions Machine card copy. Used instead of a Luma write-up. */
+export const CARD_BLURB =
   'See how a former UC Berkeley admissions officer actually reads an application, using real awards, activities, essays, and student stories. Then learn how to use technology to find better-fit schools, understand your true cost, strengthen your application, and stay on top of every deadline.';
-const CARD_BLURB_HTML =
+export const CARD_BLURB_HTML =
   'See how a former <strong>UC Berkeley</strong> admissions officer <strong>actually reads</strong> an application, using real awards, activities, essays, and student stories. Then learn how to use technology to find <strong>better-fit</strong> schools, understand your <strong>true cost</strong>, strengthen your application, and stay on top of every <strong>deadline</strong>.';
 
 export const EVENTS: LiveEvent[] = [

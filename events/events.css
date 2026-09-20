@@ -319,6 +319,8 @@ a.ev-where:hover .ev-where-addr {
   margin-top: 1.05rem;
 }
 .ev-signup {
+  /* One button now, so it takes the width the pair used to. */
+  flex: 1 1 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;

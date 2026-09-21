@@ -96,6 +96,19 @@
   font-weight: 600;
   color: var(--ev-ink);
 }
+.ev-text-short[hidden],
+.ev-text-full[hidden] { display: none; }
+.ev-more {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ev-brand);
+  cursor: pointer;
+}
+.ev-more:hover { text-decoration: underline; }
 .ev-hero-photo {
   position: relative;
   width: 100%;

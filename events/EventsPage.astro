@@ -42,6 +42,16 @@ const sameShow = events.length > 0 && events.every((e) => e.title === events[0].
 const years = [...new Set(events.map((e) => e.whenIso.slice(0, 4)))];
 const firstOfYear = new Map(years.map((y) => [y, events.findIndex((e) => e.whenIso.startsWith(y))]));
 
+/* Long write-ups (Luma descriptions) fold to about the length of the written
+   Admissions Machine summary, with a "Read more" that opens the rest in place.
+   The summary itself is under the limit, so it never folds. */
+const READ_MORE_AT = 300;
+const shorten = (text: string) => {
+  const cut = text.slice(0, READ_MORE_AT - 10);
+  const atWord = cut.slice(0, Math.max(cut.lastIndexOf(' '), 0)) || cut;
+  return atWord.replace(/[\s,;:.]+$/, '');
+};
+
 const mapsHref = (venue: string, address: string) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`;
 ---
@@ -85,7 +95,14 @@ const mapsHref = (venue: string, address: string) =>
                 <div class="ev-body">
                   <h3>{event.title}</h3>
                   <p class="ev-sub"><strong>{event.date}</strong>{[event.format, event.length, event.audience].filter(Boolean).map((s) => ` · ${s}`).join('')}</p>
-                  <p class="ev-text" set:html={event.blurbHtml} />
+                  {event.blurb.length > READ_MORE_AT ? (
+                    <p class="ev-text" data-ev-more>
+                      <span class="ev-text-short">{shorten(event.blurb)}<button type="button" class="ev-more">… Read more</button></span>
+                      <span class="ev-text-full" hidden set:html={event.blurbHtml} />
+                    </p>
+                  ) : (
+                    <p class="ev-text" set:html={event.blurbHtml} />
+                  )}
                   {event.venue && <a
                     class="ev-where"
                     href={mapsHref(event.venue, event.address)}
@@ -126,6 +143,15 @@ const mapsHref = (venue: string, address: string) =>
       window.setTimeout(() => prev.classList.remove('was-on'), 800);
     }, 3200);
   }
+
+  document.querySelectorAll('.ev-more').forEach((button) => {
+    button.addEventListener('click', () => {
+      const text = button.closest('[data-ev-more]');
+      if (!text) return;
+      text.querySelector('.ev-text-short')?.setAttribute('hidden', '');
+      text.querySelector('.ev-text-full')?.removeAttribute('hidden');
+    });
+  });
 
   document.querySelectorAll('a[href="#talk"]').forEach((a) => {
     a.addEventListener('click', (e) => {

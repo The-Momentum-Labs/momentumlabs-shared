@@ -98,7 +98,7 @@ const mapsHref = (venue: string, address: string) =>
                   {event.blurb.length > READ_MORE_AT ? (
                     <p class="ev-text" data-ev-more>
                       <span class="ev-text-short">{shorten(event.blurb)}<button type="button" class="ev-more">… Read more</button></span>
-                      <span class="ev-text-full" hidden set:html={event.blurbHtml} />
+                      <span class="ev-text-full" hidden><Fragment set:html={event.blurbHtml} /> <button type="button" class="ev-more ev-less">Show less</button></span>
                     </p>
                   ) : (
                     <p class="ev-text" set:html={event.blurbHtml} />
@@ -148,8 +148,9 @@ const mapsHref = (venue: string, address: string) =>
     button.addEventListener('click', () => {
       const text = button.closest('[data-ev-more]');
       if (!text) return;
-      text.querySelector('.ev-text-short')?.setAttribute('hidden', '');
-      text.querySelector('.ev-text-full')?.removeAttribute('hidden');
+      const open = !button.classList.contains('ev-less');
+      text.querySelector('.ev-text-short')?.toggleAttribute('hidden', open);
+      text.querySelector('.ev-text-full')?.toggleAttribute('hidden', !open);
     });
   });
 

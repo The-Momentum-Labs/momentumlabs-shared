@@ -73,6 +73,8 @@ const mapsHref = (venue: string, address: string) =>
     {events.length === 0 ? (
       <p class="ev-empty">No sessions on the calendar right now.</p>
     ) : (
+      <>
+      <div role="tablist" aria-label="Filter events" data-ev-tabs style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0 0 1.75rem"><button type="button" role="tab" data-ev-tab="upcoming" aria-selected="true" style="appearance:none;border:1px solid #8b1a2b;background-color:#8b1a2b;color:#ffffff;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:0.78rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;height:44px;padding:0 1.4rem;border-radius:6px;cursor:pointer;transition:background-color .15s,color .15s">Upcoming</button><button type="button" role="tab" data-ev-tab="past" aria-selected="false" style="appearance:none;border:1px solid #8b1a2b;background-color:#ffffff;color:#8b1a2b;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:0.78rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;height:44px;padding:0 1.4rem;border-radius:6px;cursor:pointer;transition:background-color .15s,color .15s">Past</button><button type="button" role="tab" data-ev-tab="all" aria-selected="false" style="appearance:none;border:1px solid #8b1a2b;background-color:#ffffff;color:#8b1a2b;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:0.78rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;height:44px;padding:0 1.4rem;border-radius:6px;cursor:pointer;transition:background-color .15s,color .15s">All</button></div>
       <ol class="ev-list">
         {events.map((event, i) => (
           <>
@@ -124,6 +126,7 @@ const mapsHref = (venue: string, address: string) =>
           </>
         ))}
       </ol>
+      </>
     )}
   </section>
 </div>
@@ -160,4 +163,42 @@ const mapsHref = (venue: string, address: string) =>
       window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
     });
   });
+</script>
+
+<script is:inline>
+(function(){
+  var re=/(January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})/;
+  function apply(tab){
+    var today=new Date();today.setHours(0,0,0,0);
+    document.querySelectorAll('[data-ev-tab]').forEach(function(b){
+      var on=b.getAttribute('data-ev-tab')===tab;
+      b.setAttribute('aria-selected',on?'true':'false');
+      b.style.backgroundColor=on?'#8b1a2b':'#ffffff';
+      b.style.color=on?'#ffffff':'#8b1a2b';
+    });
+    var ol=document.querySelector('.ev-list');if(!ol)return;
+    ol.querySelectorAll('.ev-entry').forEach(function(li){
+      var sub=li.querySelector('.ev-sub');var m=(sub?sub.textContent:li.textContent).match(re);
+      var past=m?new Date(m[1]+' '+m[2]+', '+m[3])<today:false;
+      li.style.display=(tab==='all'||(tab==='past'?past:!past))?'':'none';
+    });
+    ol.querySelectorAll('.ev-year').forEach(function(y){
+      var n=y.nextElementSibling,any=false;
+      while(n&&!n.classList.contains('ev-year')){if(n.style.display!=='none')any=true;n=n.nextElementSibling;}
+      y.style.display=any?'':'none';
+    });
+  }
+  (function sortByDate(){
+    var ol=document.querySelector('.ev-list');if(!ol)return;
+    var entries=[].slice.call(ol.querySelectorAll('.ev-entry'));
+    function d(li){var s=li.querySelector('.ev-sub');var m=(s?s.textContent:'').match(re);return m?new Date(m[1]+' '+m[2]+', '+m[3]):null;}
+    ol.querySelectorAll('.ev-year').forEach(function(y){
+      var yr=y.textContent.trim();
+      var group=entries.filter(function(li){var x=d(li);return x&&String(x.getFullYear())===yr;}).sort(function(a,b){return d(a)-d(b);});
+      var at=y;group.forEach(function(li){at.after(li);at=li;});
+    });
+  })();
+  document.querySelectorAll('[data-ev-tab]').forEach(function(b){b.addEventListener('click',function(){apply(b.getAttribute('data-ev-tab'));});});
+  apply('upcoming');
+})();
 </script>

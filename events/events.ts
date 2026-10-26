@@ -7,7 +7,7 @@
  * for one product sees only its own, a site asking for nothing sees them all.
  */
 
-export type ProductKey = 'admissionsos';
+export type ProductKey = 'opportunityos';
 
 export type LiveEvent = {
   id: string;
@@ -55,7 +55,7 @@ export const CARD_BLURB_HTML =
 export const EVENTS: LiveEvent[] = [
   {
     id: 'la-1',
-    products: ['admissionsos'],
+    products: ['opportunityos'],
     when: 'Night one',
     date: 'Tuesday, September 29, 2026',
     time: '5-7pm',
@@ -79,7 +79,7 @@ export const EVENTS: LiveEvent[] = [
   },
   {
     id: 'la-2',
-    products: ['admissionsos'],
+    products: ['opportunityos'],
     when: 'Night two',
     date: 'Tuesday, October 27, 2026',
     time: '5-7pm',

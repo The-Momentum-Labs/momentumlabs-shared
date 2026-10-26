@@ -9,7 +9,7 @@ This repo is a library, not a website. Nothing here deploys.
 
 A consuming site never copies from here. It installs this package and renders the
 component. If you find yourself editing a copy of one of these files inside
-`admissionsos-marketing` or `momentumlabs-company`, the sharing has already broken.
+`opportunityos-marketing` or `momentumlabs-company`, the sharing has already broken.
 
 ## How a site consumes it
 
@@ -34,7 +34,7 @@ const jsonLd = eventsJsonLd({
 </SiteBase>
 ```
 
-Pass `product="admissionsos"` to both `EventsPage` and `eventsJsonLd` to narrow the list
+Pass `product="opportunityos"` to both `EventsPage` and `eventsJsonLd` to narrow the list
 to that product's events. Pass nothing and every Momentum Labs event shows.
 
 ## Adding or moving an event

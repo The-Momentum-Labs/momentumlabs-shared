@@ -3,6 +3,7 @@
  * mcp.mjs — the design pipeline as one tool call.
  *
  *   claude mcp add design -s project -- node node_modules/@momentumlabs/shared/design/scripts/mcp.mjs
+ *   claude mcp add design -s project -- npx --no-install momentum-design-mcp
  *
  * design_sync runs what `npm run design` runs in a repo: design-pull.mjs then
  * dc-gen.mjs, both with --manifest design.config.json, for one screen or all.

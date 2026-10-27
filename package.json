@@ -3,18 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Pages and styles shared across every Momentum Labs site. Edit here, never in a consuming repo.",
+  "description": "Pages, styles, and the Claude Design pipeline shared across Momentum Labs. Edit here, never in a consuming repo.",
   "exports": {
     "./events/EventsPage.astro": "./events/EventsPage.astro",
     "./events/events.css": "./events/events.css",
     "./events/events.ts": "./events/events.ts",
     "./events/jsonLd.ts": "./events/jsonLd.ts",
-    "./events/assets/*": "./events/assets/*"
+    "./events/assets/*": "./events/assets/*",
+    "./design/scripts/*": "./design/scripts/*",
+    "./design/reference/*": "./design/reference/*"
+  },
+  "bin": {
+    "momentum-design-pull": "./design/scripts/design-pull.mjs",
+    "momentum-design-push": "./design/scripts/design-push.mjs",
+    "momentum-design-gen": "./design/scripts/dc-gen.mjs",
+    "momentum-design-tokens": "./design/scripts/ds-tokens.mjs",
+    "momentum-design-mcp": "./design/scripts/mcp.mjs"
   },
   "files": [
-    "events"
+    "events",
+    "design"
   ],
+  "scripts": {
+    "test": "node --test design/scripts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "parse5": "^7.2.1",
+    "zod": "^3.25.76"
+  },
   "peerDependencies": {
     "astro": "^5.10.0"
+  },
+  "peerDependenciesMeta": {
+    "astro": {
+      "optional": true
+    }
   }
 }

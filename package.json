@@ -25,7 +25,7 @@
     "design"
   ],
   "scripts": {
-    "test": "node --test design/scripts"
+    "test": "node --test design/scripts/*.test.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
